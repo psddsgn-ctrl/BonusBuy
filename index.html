@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bonus Buy Battle</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #f0d080;
+    --gold-dark: #8b6914;
+    --bg-deep: #0a0705;
+    --bg-card: #12100d;
+    --bg-raised: #1a1610;
+    --bg-input: #0e0c09;
+    --red: #c0392b;
+    --green: #27ae60;
+    --green-bright: #2ecc71;
+    --text: #e8dcc8;
+    --text-dim: #7a6a50;
+    --border: #2a2218;
+    --border-gold: rgba(201,168,76,0.3);
+    --shadow-gold: 0 0 30px rgba(201,168,76,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--bg-deep);
+    color: var(--text);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(201,168,76,0.05) 0%, transparent 60%),
+      repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(201,168,76,0.015) 60px, rgba(201,168,76,0.015) 61px),
+      repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(201,168,76,0.015) 60px, rgba(201,168,76,0.015) 61px);
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 60px 20px 30px;
+    position: relative;
+  }
+  .crown {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    display: block;
+    filter: drop-shadow(0 0 12px var(--gold));
+  }
+  h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    color: var(--gold-light);
+    text-shadow: 0 0 40px rgba(201,168,76,0.4), 0 2px 8px rgba(0,0,0,0.8);
+    letter-spacing: 3px;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 6px;
+    text-transform: uppercase;
+  }
+  .divider {
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 24px auto;
+    position: relative;
+  }
+  .divider::before {
+    content: '◆';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--gold);
+    font-size: 0.5rem;
+    background: var(--bg-deep);
+    padding: 0 6px;
+  }
+
+  /* NAV TABS */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin: 0 20px 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: 4px;
+    padding: 4px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: #0a0705;
+    font-weight: 600;
+    box-shadow: 0 0 20px rgba(201,168,76,0.3);
+  }
+  .tab-btn:hover:not(.active) { color: var(--gold-light); }
+
+  /* SECTIONS */
+  .section { display: none; max-width: 780px; margin: 0 auto; padding: 0 20px 60px; }
+  .section.active { display: block; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+  /* CARDS */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-gold);
+    border-radius: 4px;
+    padding: 28px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-gold), inset 0 1px 0 rgba(201,168,76,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-title span { opacity: 0.5; }
+
+  /* INPUTS */
+  label {
+    display: block;
+    font-size: 0.68rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 7px;
+    font-weight: 500;
+  }
+  input[type=text], input[type=number] {
+    width: 100%;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-family: 'Raleway', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    appearance: none;
+  }
+  input[type=number] { -moz-appearance: textfield; }
+  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  input:focus {
+    border-color: var(--gold-dark);
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.1);
+  }
+  .input-group { margin-bottom: 16px; }
+  .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:500px) { .input-row { grid-template-columns: 1fr; } }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 28px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: all 0.25s;
+    font-weight: 600;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-light) 100%);
+    color: #0a0705;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 28px rgba(201,168,76,0.35);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--red); color: var(--red); }
+  .btn-green {
+    background: linear-gradient(135deg, #1a5c38, var(--green));
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(39,174,96,0.2);
+  }
+  .btn-green:hover { box-shadow: 0 6px 28px rgba(39,174,96,0.3); transform: translateY(-1px); }
+  .btn-full { width: 100%; }
+
+  /* CURRENCY SECTION */
+  .rate-display {
+    text-align: center;
+    padding: 24px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border-gold);
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  .rate-label { font-size: 0.65rem; letter-spacing: 4px; color: var(--text-dim); margin-bottom: 8px; }
+  .rate-value {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    color: var(--gold-light);
+    text-shadow: 0 0 20px rgba(201,168,76,0.3);
+  }
+  .rate-sub { font-size: 0.7rem; color: var(--text-dim); margin-top: 6px; }
+  .currency-result {
+    text-align: center;
+    padding: 20px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border-gold);
+    border-radius: 4px;
+    margin-top: 16px;
+    display: none;
+  }
+  .currency-result.show { display: block; animation: fadeIn 0.3s ease; }
+  .result-big {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.2rem;
+    color: var(--green-bright);
+    text-shadow: 0 0 20px rgba(46,204,113,0.3);
+  }
+  .result-label { font-size: 0.65rem; letter-spacing: 4px; color: var(--text-dim); margin-bottom: 10px; }
+
+  /* BATTLE SECTION */
+  .balance-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-raised);
+    border: 1px solid var(--border-gold);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .balance-label { font-size: 0.65rem; letter-spacing: 3px; color: var(--text-dim); }
+  .balance-value { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--gold-light); }
+
+  /* GAMES LIST */
+  .games-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  .game-card {
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    position: relative;
+    transition: border-color 0.2s;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:translateX(0); } }
+  .game-card.has-win { border-color: rgba(39,174,96,0.4); }
+  .game-card.is-loss { border-color: rgba(192,57,43,0.3); }
+  .game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .game-number {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+  }
+  .game-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .game-bet {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+  .game-bet span { color: var(--red); font-weight: 600; }
+  .game-win-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 2px;
+    background: rgba(39,174,96,0.15);
+    color: var(--green-bright);
+    border: 1px solid rgba(39,174,96,0.3);
+    display: none;
+  }
+  .game-card.has-win .game-win-badge { display: block; }
+  .game-profit {
+    font-size: 0.75rem;
+    text-align: right;
+    margin-top: 6px;
+    display: none;
+  }
+  .game-card.has-win .game-profit { display: block; }
+  .profit-pos { color: var(--green-bright); }
+  .profit-neg { color: var(--red); }
+
+  /* WIN ENTRY */
+  .win-entry-area {
+    border: 1px dashed var(--border-gold);
+    border-radius: 4px;
+    padding: 20px;
+    margin-top: 8px;
+    display: none;
+  }
+  .win-entry-area.show { display: block; animation: fadeIn 0.3s ease; }
+  .win-entry-grid { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; }
+
+  /* SUMMARY */
+  .summary-card {
+    background: linear-gradient(135deg, rgba(10,7,5,0.8), rgba(26,22,16,0.8));
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(201,168,76,0.1), inset 0 0 40px rgba(201,168,76,0.02);
+    display: none;
+    margin-top: 20px;
+  }
+  .summary-card.show { display: block; animation: fadeIn 0.5s ease; }
+  .summary-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.85rem;
+    letter-spacing: 4px;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .summary-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  @media(max-width:500px) { .summary-stats { grid-template-columns: 1fr; } }
+  .stat-box {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 14px 10px;
+  }
+  .stat-label { font-size: 0.6rem; letter-spacing: 3px; color: var(--text-dim); margin-bottom: 8px; }
+  .stat-value { font-family: 'Cinzel', serif; font-size: 1.3rem; }
+  .stat-value.pos { color: var(--green-bright); }
+  .stat-value.neg { color: var(--red); }
+  .stat-value.neutral { color: var(--gold-light); }
+  .big-result {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.6rem, 5vw, 3rem);
+    margin: 10px 0 6px;
+  }
+  .big-result.win { color: var(--green-bright); text-shadow: 0 0 30px rgba(46,204,113,0.4); }
+  .big-result.loss { color: var(--red); text-shadow: 0 0 30px rgba(192,57,43,0.4); }
+  .big-result-label { font-size: 0.65rem; letter-spacing: 4px; color: var(--text-dim); }
+
+  /* PHASE TOGGLE */
+  .phase-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    font-weight: 600;
+  }
+  .phase-spin {
+    background: rgba(192,57,43,0.1);
+    border: 1px solid rgba(192,57,43,0.3);
+    color: var(--red);
+  }
+  .phase-reveal {
+    background: rgba(39,174,96,0.1);
+    border: 1px solid rgba(39,174,96,0.3);
+    color: var(--green-bright);
+  }
+  .phase-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  .phase-spin .phase-dot { background: var(--red); box-shadow: 0 0 6px var(--red); }
+  .phase-reveal .phase-dot { background: var(--green-bright); box-shadow: 0 0 6px var(--green-bright); }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.85)} }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .phase-switch-btn { margin: 0 auto 0; display: block; }
+
+  /* RESET */
+  .reset-row { text-align: center; margin-top: 10px; }
+
+  /* CURRENCY TOGGLE */
+  .currency-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .ctab {
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    background: transparent;
+    transition: all 0.2s;
+  }
+  .ctab.active { background: var(--bg-raised); color: var(--gold-light); border-bottom: 1px solid var(--gold); }
+  .ctab:hover:not(.active) { color: var(--text); }
+
+  /* CHIP BADGES */
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .chip {
+    padding: 5px 12px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border-gold);
+    border-radius: 50px;
+    font-size: 0.7rem;
+    color: var(--gold);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+  .chip:hover { background: var(--gold-dark); color: #0a0705; }
+
+  /* BATTLE CURRENCY SELECTOR */
+  .battle-currency-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-gold);
+    border-radius: 2px;
+    padding: 4px;
+  }
+  .bcur-btn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .bcur-btn.active {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: #0a0705;
+    font-weight: 600;
+  }
+  .bcur-btn:hover:not(.active) { color: var(--gold-light); }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 30px 20px;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="crown">♛</span>
+  <h1>Bonus Buy<br>Battle</h1>
+  <p class="subtitle">Casino Tracker &amp; Currency Exchange</p>
+  <div class="divider"></div>
+</header>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('battle')">⚔ Battle</button>
+  <button class="tab-btn" onclick="switchTab('currency')">💱 Peso → PLN</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     BATTLE SECTION
+     ══════════════════════════════════════ -->
+<div id="tab-battle" class="section active">
+
+  <!-- Phase banner -->
+  <div id="phaseBanner" class="phase-banner phase-spin">
+    <div class="phase-dot"></div>
+    <span id="phaseText">FAZA SPINOWANIA — WPISUJ GRY</span>
+  </div>
+
+  <!-- Currency selector for Battle -->
+  <div class="card" style="margin-bottom:16px;padding:18px 28px;">
+    <div class="card-title" style="margin-bottom:14px;">💰 <span>Waluta gry</span></div>
+    <div class="battle-currency-selector">
+      <button class="bcur-btn active" id="bcur-pln" onclick="setBattleCurrency('PLN', this)">🇵🇱 PLN – Złoty</button>
+      <button class="bcur-btn" id="bcur-ars" onclick="setBattleCurrency('ARS', this)">🇦🇷 ARS – Peso</button>
+    </div>
+    <div style="font-size:0.68rem;color:var(--text-dim);letter-spacing:1px;" id="battleCurInfo">
+      Kwoty podawaj w złotych polskich (PLN)
+    </div>
+  </div>
+
+  <!-- Starting balance -->
+  <div class="card">
+    <div class="card-title">♦ <span>Saldo startowe</span></div>
+    <div class="input-row">
+      <div class="input-group">
+        <label>Saldo (PLN)</label>
+        <input type="number" id="startBalance" placeholder="np. 500" oninput="updateBalance()">
+        <div class="chips">
+          <span class="chip" onclick="setBalance(100)">100 zł</span>
+          <span class="chip" onclick="setBalance(200)">200 zł</span>
+          <span class="chip" onclick="setBalance(500)">500 zł</span>
+          <span class="chip" onclick="setBalance(1000)">1000 zł</span>
+        </div>
+      </div>
+      <div class="balance-display" style="margin-bottom:0;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="balance-label">SALDO</div>
+        <div class="balance-value" id="balanceShow">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add game -->
+  <div class="card" id="addGameCard">
+    <div class="card-title">🎰 <span>Dodaj grę</span></div>
+    <div class="input-group">
+      <label>Nazwa gry</label>
+      <input type="text" id="gameName" placeholder="np. Gates of Olympus">
+    </div>
+    <div class="input-group">
+      <label>Kwota włożona w bonus (PLN)</label>
+      <input type="number" id="gameBet" placeholder="np. 50">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="addGame()">+ Dodaj grę</button>
+    </div>
+  </div>
+
+  <!-- Games list -->
+  <div id="gamesList" class="games-list"></div>
+
+  <!-- Phase switch button -->
+  <div id="phaseSwitch" style="display:none;margin-bottom:20px;">
+    <button class="btn btn-green btn-full phase-switch-btn" onclick="switchPhase()">
+      🎲 Pospinowałem wszystkie — WPISUJĘ WYGRANE
+    </button>
+  </div>
+
+  <!-- Win entry area -->
+  <div class="win-entry-area" id="winEntryArea">
+    <div class="card-title" style="margin-bottom:16px;">🏆 <span>Wpisz wygrane</span></div>
+    <div id="winInputsList"></div>
+    <button class="btn btn-primary btn-full" style="margin-top:12px;" onclick="calculateSummary()">⚡ Oblicz wyniki</button>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-card" id="summaryCard">
+    <div class="summary-title">◆ PODSUMOWANIE BATTLE ◆</div>
+    <div class="summary-stats">
+      <div class="stat-box">
+        <div class="stat-label">SALDO STARTOWE</div>
+        <div class="stat-value neutral" id="sumStart">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">ŁĄCZNIE POSTAWIONE</div>
+        <div class="stat-value neg" id="sumBets">—</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">ŁĄCZNIE WYGRANE</div>
+        <div class="stat-value pos" id="sumWins">—</div>
+      </div>
+    </div>
+    <div class="big-result-label">WYNIK NETTO</div>
+    <div class="big-result" id="sumNet">—</div>
+    <div class="big-result-label" id="sumResultLabel" style="margin-top:6px;"></div>
+    <div style="margin-top:20px;font-size:0.7rem;color:var(--text-dim);letter-spacing:2px;" id="sumGames"></div>
+  </div>
+
+  <div class="reset-row">
+    <button class="btn btn-ghost" onclick="resetBattle()" style="margin-top:10px;">↺ Reset battle</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CURRENCY SECTION
+     ══════════════════════════════════════ -->
+<div id="tab-currency" class="section">
+
+  <div class="card">
+    <div class="card-title">💱 <span>Kurs walut</span></div>
+
+    <div class="rate-display">
+      <div class="rate-label">AKTUALNY KURS ARS/PLN</div>
+      <div class="rate-value" id="rateDisplay">Ładowanie...</div>
+      <div class="rate-sub" id="rateSource">Pobieranie z API...</div>
+    </div>
+
+    <div class="currency-tabs">
+      <button class="ctab active" onclick="setCurrencyDir('ars-pln', this)">ARS → PLN</button>
+      <button class="ctab" onclick="setCurrencyDir('pln-ars', this)">PLN → ARS</button>
+    </div>
+
+    <div class="input-group">
+      <label id="currencyLabel">Kwota w peso argentyńskich (ARS)</label>
+      <input type="number" id="currencyAmount" placeholder="np. 10000" oninput="convertCurrency()">
+      <div class="chips" id="currencyChips">
+        <span class="chip" onclick="setCurrencyAmt(1000)">1 000 ARS</span>
+        <span class="chip" onclick="setCurrencyAmt(5000)">5 000 ARS</span>
+        <span class="chip" onclick="setCurrencyAmt(10000)">10 000 ARS</span>
+        <span class="chip" onclick="setCurrencyAmt(50000)">50 000 ARS</span>
+        <span class="chip" onclick="setCurrencyAmt(100000)">100 000 ARS</span>
+      </div>
+    </div>
+
+    <div class="currency-result" id="currencyResult">
+      <div class="result-label" id="resultLabel">WARTOŚĆ W PLN</div>
+      <div class="result-big" id="resultValue">—</div>
+      <div style="font-size:0.7rem;color:var(--text-dim);margin-top:8px;" id="resultSub"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📋 <span>Tabela przeliczeniowa</span></div>
+    <div id="convTable" style="display:grid;gap:8px;"></div>
+  </div>
+</div>
+
+<footer>
+  ♠ BONUS BUY BATTLE TRACKER ♠ &nbsp;·&nbsp; Graj odpowiedzialnie
+</footer>
+
+<script>
+// ═══════════════════════════
+// STATE
+// ═══════════════════════════
+let games = [];
+let phase = 'spin'; // 'spin' | 'reveal'
+let exchangeRate = null; // ARS per 1 PLN
+let currencyDir = 'ars-pln';
+let battleCurrency = 'PLN'; // 'PLN' | 'ARS'
+
+// ═══════════════════════════
+// TABS
+// ═══════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'currency' && !exchangeRate) fetchRate();
+}
+
+// ═══════════════════════════
+// BATTLE CURRENCY
+// ═══════════════════════════
+function setBattleCurrency(cur, el) {
+  battleCurrency = cur;
+  document.querySelectorAll('.bcur-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const info = document.getElementById('battleCurInfo');
+  const balLabel = document.querySelector('label[for="startBalance"], #tab-battle label');
+  if (cur === 'ARS') {
+    info.textContent = 'Kwoty podawaj w peso argentyńskich (ARS) — wyniki zostaną przeliczone na PLN';
+    document.querySelector('#tab-battle label').textContent = 'Saldo (ARS)';
+    document.getElementById('gameBet').placeholder = 'np. 5000';
+    document.querySelector('label[for="gameBet"]') && (document.querySelector('label[for="gameBet"]').textContent = 'Kwota włożona w bonus (ARS)');
+    // Update bet label
+    document.querySelectorAll('#tab-battle label').forEach(l => {
+      if (l.textContent.includes('Kwota włożona')) l.textContent = 'Kwota włożona w bonus (ARS)';
+      if (l.textContent.includes('Saldo (PLN)')) l.textContent = 'Saldo (ARS)';
+    });
+    // Update balance chips
+    document.querySelector('#tab-battle .chips').innerHTML = `
+      <span class="chip" onclick="setBalance(10000)">10 000 ARS</span>
+      <span class="chip" onclick="setBalance(50000)">50 000 ARS</span>
+      <span class="chip" onclick="setBalance(100000)">100 000 ARS</span>
+      <span class="chip" onclick="setBalance(200000)">200 000 ARS</span>`;
+  } else {
+    info.textContent = 'Kwoty podawaj w złotych polskich (PLN)';
+    document.querySelectorAll('#tab-battle label').forEach(l => {
+      if (l.textContent.includes('Kwota włożona')) l.textContent = 'Kwota włożona w bonus (PLN)';
+      if (l.textContent.includes('Saldo (ARS)')) l.textContent = 'Saldo (PLN)';
+    });
+    document.getElementById('gameBet').placeholder = 'np. 50';
+    document.querySelector('#tab-battle .chips').innerHTML = `
+      <span class="chip" onclick="setBalance(100)">100 zł</span>
+      <span class="chip" onclick="setBalance(200)">200 zł</span>
+      <span class="chip" onclick="setBalance(500)">500 zł</span>
+      <span class="chip" onclick="setBalance(1000)">1000 zł</span>`;
+  }
+  updateBalance();
+  renderGames();
+}
+
+function battleCurSymbol() { return battleCurrency === 'PLN' ? 'zł' : 'ARS'; }
+
+function formatBattleAmount(val) {
+  if (battleCurrency === 'ARS') {
+    return val.toLocaleString('pl-PL', { maximumFractionDigits: 0 }) + ' ARS';
+  }
+  return val.toFixed(2) + ' zł';
+}
+
+// ═══════════════════════════
+// BALANCE
+// ═══════════════════════════
+function setBalance(v) {
+  document.getElementById('startBalance').value = v;
+  updateBalance();
+}
+function updateBalance() {
+  const v = parseFloat(document.getElementById('startBalance').value);
+  document.getElementById('balanceShow').textContent = isNaN(v) ? '—' : formatBattleAmount(v);
+}
+
+// ═══════════════════════════
+// GAMES
+// ═══════════════════════════
+function addGame() {
+  const name = document.getElementById('gameName').value.trim();
+  const bet = parseFloat(document.getElementById('gameBet').value);
+  if (!name) { alert('Wpisz nazwę gry!'); return; }
+  if (isNaN(bet) || bet <= 0) { alert('Wpisz prawidłową kwotę!'); return; }
+  games.push({ id: Date.now(), name, bet, win: null });
+  document.getElementById('gameName').value = '';
+  document.getElementById('gameBet').value = '';
+  document.getElementById('gameName').focus();
+  renderGames();
+  document.getElementById('phaseSwitch').style.display = 'block';
+  document.getElementById('summaryCard').classList.remove('show');
+}
+
+function removeGame(id) {
+  games = games.filter(g => g.id !== id);
+  renderGames();
+  if (games.length === 0) {
+    document.getElementById('phaseSwitch').style.display = 'none';
+    document.getElementById('winEntryArea').classList.remove('show');
+    phase = 'spin';
+    updatePhaseBanner();
+  }
+  rebuildWinInputs();
+}
+
+function renderGames() {
+  const list = document.getElementById('gamesList');
+  if (games.length === 0) { list.innerHTML = ''; return; }
+  list.innerHTML = games.map((g, i) => {
+    const hasWin = g.win !== null;
+    const profit = hasWin ? g.win - g.bet : null;
+    const profitHtml = profit !== null
+      ? `<div class="game-profit">Wynik: <span class="${profit >= 0 ? 'profit-pos' : 'profit-neg'}">${profit >= 0 ? '+' : ''}${formatBattleAmount(profit)}</span></div>`
+      : '';
+    return `
+    <div class="game-card ${hasWin ? (g.win - g.bet >= 0 ? 'has-win' : 'is-loss') : ''}" id="gc-${g.id}">
+      <div class="game-header">
+        <div>
+          <div class="game-number">GRA #${i + 1}</div>
+          <div class="game-name">${escHtml(g.name)}</div>
+          <div class="game-bet">Postawione: <span>${formatBattleAmount(g.bet)}</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+          ${hasWin ? `<div class="game-win-badge">+${formatBattleAmount(g.win)}</div>` : ''}
+          ${phase === 'spin' ? `<button class="btn btn-ghost" style="padding:6px 12px;font-size:0.6rem;" onclick="removeGame(${g.id})">✕</button>` : ''}
+        </div>
+      </div>
+      ${profitHtml}
+    </div>`;
+  }).join('');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ═══════════════════════════
+// PHASE
+// ═══════════════════════════
+function switchPhase() {
+  if (games.length === 0) return;
+  phase = 'reveal';
+  updatePhaseBanner();
+  document.getElementById('addGameCard').style.display = 'none';
+  document.getElementById('phaseSwitch').style.display = 'none';
+  document.getElementById('winEntryArea').classList.add('show');
+  rebuildWinInputs();
+  renderGames();
+}
+
+function updatePhaseBanner() {
+  const banner = document.getElementById('phaseBanner');
+  const text = document.getElementById('phaseText');
+  if (phase === 'spin') {
+    banner.className = 'phase-banner phase-spin';
+    text.textContent = 'FAZA SPINOWANIA — WPISUJ GRY';
+  } else {
+    banner.className = 'phase-banner phase-reveal';
+    text.textContent = 'FAZA WYGRANYCH — WPISZ WYNIKI';
+  }
+}
+
+function rebuildWinInputs() {
+  const container = document.getElementById('winInputsList');
+  container.innerHTML = games.map(g => `
+    <div class="input-group" style="margin-bottom:14px;">
+      <label>${escHtml(g.name)} <span style="color:var(--text-dim);font-size:0.6rem;">(postawione: ${formatBattleAmount(g.bet)})</span></label>
+      <input type="number" placeholder="Wygrana (0 jeśli brak)" id="win-${g.id}"
+        value="${g.win !== null ? g.win : ''}"
+        oninput="updateWin(${g.id}, this.value)">
+    </div>
+  `).join('');
+}
+
+function updateWin(id, val) {
+  const g = games.find(x => x.id === id);
+  if (g) g.win = val === '' ? null : parseFloat(val) || 0;
+  renderGames();
+}
+
+// ═══════════════════════════
+// SUMMARY
+// ═══════════════════════════
+function calculateSummary() {
+  const allFilled = games.every(g => g.win !== null);
+  if (!allFilled) {
+    alert('Uzupełnij wygraną dla wszystkich gier! (wpisz 0 jeśli brak wygranej)');
+    return;
+  }
+  const startBal = parseFloat(document.getElementById('startBalance').value) || 0;
+  const totalBet = games.reduce((s, g) => s + g.bet, 0);
+  const totalWin = games.reduce((s, g) => s + g.win, 0);
+  const net = totalWin - totalBet;
+
+  document.getElementById('sumStart').textContent = formatBattleAmount(startBal);
+  document.getElementById('sumBets').textContent = '-' + formatBattleAmount(totalBet);
+  document.getElementById('sumWins').textContent = '+' + formatBattleAmount(totalWin);
+
+  const netEl = document.getElementById('sumNet');
+  const labelEl = document.getElementById('sumResultLabel');
+  netEl.textContent = (net >= 0 ? '+' : '') + formatBattleAmount(net);
+  netEl.className = 'big-result ' + (net >= 0 ? 'win' : 'loss');
+  labelEl.textContent = net >= 0 ? '💰 WYGRAŁEŚ!' : '💸 PRZEGRANA';
+
+  const wins = games.filter(g => g.win > g.bet).length;
+  const losses = games.length - wins;
+  document.getElementById('sumGames').textContent =
+    `${games.length} gier · ${wins} wygranych · ${losses} przegranych`;
+
+  document.getElementById('summaryCard').classList.add('show');
+  document.getElementById('summaryCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ═══════════════════════════
+// RESET
+// ═══════════════════════════
+function resetBattle() {
+  if (!confirm('Zresetować całą sesję battle?')) return;
+  games = [];
+  phase = 'spin';
+  document.getElementById('startBalance').value = '';
+  document.getElementById('gameName').value = '';
+  document.getElementById('gameBet').value = '';
+  document.getElementById('balanceShow').textContent = '—';
+  document.getElementById('addGameCard').style.display = 'block';
+  document.getElementById('phaseSwitch').style.display = 'none';
+  document.getElementById('winEntryArea').classList.remove('show');
+  document.getElementById('summaryCard').classList.remove('show');
+  document.getElementById('winInputsList').innerHTML = '';
+  updatePhaseBanner();
+  renderGames();
+}
+
+// ═══════════════════════════
+// CURRENCY
+// ═══════════════════════════
+async function fetchRate() {
+  const rateEl = document.getElementById('rateDisplay');
+  const srcEl = document.getElementById('rateSource');
+  rateEl.textContent = 'Pobieranie...';
+  srcEl.textContent = '';
+
+  try {
+    // Try exchangerate-api (free, no key needed for simple pairs)
+    const res = await fetch('https://api.exchangerate-api.com/v4/latest/PLN');
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    exchangeRate = data.rates['ARS']; // ARS per 1 PLN
+    const plnPerArs = 1 / exchangeRate;
+    rateEl.textContent = `1 ARS = ${plnPerArs.toFixed(6)} PLN`;
+    srcEl.textContent = `1 PLN = ${exchangeRate.toFixed(2)} ARS · Źródło: ExchangeRate-API`;
+    buildTable();
+    convertCurrency();
+  } catch {
+    // Fallback hardcoded approximate rate
+    exchangeRate = 400; // rough estimate
+    const plnPerArs = 1 / exchangeRate;
+    rateEl.textContent = `~1 ARS = ${plnPerArs.toFixed(6)} PLN`;
+    srcEl.textContent = '⚠ Kurs przybliżony (offline) · 1 PLN ≈ 400 ARS';
+    buildTable();
+    convertCurrency();
+  }
+}
+
+function setCurrencyDir(dir, el) {
+  currencyDir = dir;
+  document.querySelectorAll('.ctab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const label = document.getElementById('currencyLabel');
+  const chips = document.getElementById('currencyChips');
+  if (dir === 'ars-pln') {
+    label.textContent = 'Kwota w peso argentyńskich (ARS)';
+    chips.innerHTML = `
+      <span class="chip" onclick="setCurrencyAmt(1000)">1 000 ARS</span>
+      <span class="chip" onclick="setCurrencyAmt(5000)">5 000 ARS</span>
+      <span class="chip" onclick="setCurrencyAmt(10000)">10 000 ARS</span>
+      <span class="chip" onclick="setCurrencyAmt(50000)">50 000 ARS</span>
+      <span class="chip" onclick="setCurrencyAmt(100000)">100 000 ARS</span>`;
+  } else {
+    label.textContent = 'Kwota w złotych polskich (PLN)';
+    chips.innerHTML = `
+      <span class="chip" onclick="setCurrencyAmt(10)">10 zł</span>
+      <span class="chip" onclick="setCurrencyAmt(50)">50 zł</span>
+      <span class="chip" onclick="setCurrencyAmt(100)">100 zł</span>
+      <span class="chip" onclick="setCurrencyAmt(500)">500 zł</span>
+      <span class="chip" onclick="setCurrencyAmt(1000)">1 000 zł</span>`;
+  }
+  document.getElementById('currencyAmount').value = '';
+  document.getElementById('currencyResult').classList.remove('show');
+}
+
+function setCurrencyAmt(v) {
+  document.getElementById('currencyAmount').value = v;
+  convertCurrency();
+}
+
+function convertCurrency() {
+  if (!exchangeRate) return;
+  const amt = parseFloat(document.getElementById('currencyAmount').value);
+  const resEl = document.getElementById('currencyResult');
+  const valEl = document.getElementById('resultValue');
+  const lblEl = document.getElementById('resultLabel');
+  const subEl = document.getElementById('resultSub');
+  if (isNaN(amt) || amt <= 0) { resEl.classList.remove('show'); return; }
+
+  let result, fromCur, toCur;
+  if (currencyDir === 'ars-pln') {
+    result = amt / exchangeRate;
+    fromCur = 'ARS'; toCur = 'PLN';
+    lblEl.textContent = 'WARTOŚĆ W PLN';
+    valEl.textContent = result.toFixed(2) + ' zł';
+    subEl.textContent = `${amt.toLocaleString('pl')} ARS po kursie 1 PLN = ${exchangeRate.toFixed(2)} ARS`;
+  } else {
+    result = amt * exchangeRate;
+    fromCur = 'PLN'; toCur = 'ARS';
+    lblEl.textContent = 'WARTOŚĆ W ARS';
+    valEl.textContent = result.toLocaleString('pl-PL', { maximumFractionDigits: 0 }) + ' ARS';
+    subEl.textContent = `${amt.toLocaleString('pl')} PLN po kursie 1 PLN = ${exchangeRate.toFixed(2)} ARS`;
+  }
+  resEl.classList.add('show');
+}
+
+function buildTable() {
+  if (!exchangeRate) return;
+  const amounts = [100, 500, 1000, 5000, 10000, 50000, 100000];
+  const table = document.getElementById('convTable');
+  table.style.gridTemplateColumns = '1fr 1fr';
+  table.innerHTML = `
+    <div style="font-size:0.6rem;letter-spacing:3px;color:var(--text-dim);padding:8px 12px;border-bottom:1px solid var(--border);">ARS</div>
+    <div style="font-size:0.6rem;letter-spacing:3px;color:var(--text-dim);padding:8px 12px;border-bottom:1px solid var(--border);">PLN</div>
+    ${amounts.map(a => `
+      <div style="padding:10px 12px;border-bottom:1px solid var(--border);font-weight:600;">${a.toLocaleString('pl')} ARS</div>
+      <div style="padding:10px 12px;border-bottom:1px solid var(--border);color:var(--gold-light);">
+        ${(a / exchangeRate).toFixed(2)} zł
+      </div>
+    `).join('')}
+  `;
+}
+
+// Init
+fetchRate();
+</script>
+</body>
+</html>
